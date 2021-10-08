@@ -1,0 +1,20 @@
+.menuList__box--top {
+  height: 20rem !important;
+}
+
+.menuList__div--text {
+  width: 8rem;
+  padding: 4px;
+}
+
+.menuList__icons:hover .menuList__div--text {
+  border-bottom: "2px solid #0077b6 !important";
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #faf9fa;
+  height: 100vh;
+}

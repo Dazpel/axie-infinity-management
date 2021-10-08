@@ -1,0 +1,32 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+.tmp_build
+.vscode
+.webpack
+.serverless
+
+#yarn error log
+yarn-error.log
+yarn.lock
+
+#folders
+@types/*
+dist/*
+generated/*
+graphql/*
+prisma/migrations/
+scripts/*
+/build
+.firebase
+.github
+
+#Env Var
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env

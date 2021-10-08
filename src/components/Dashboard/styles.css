@@ -1,0 +1,31 @@
+.dashboard__card--container {
+  flex: 1;
+  min-width: 12rem !important;
+  max-width: 15rem !important;
+  height: 10rem;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.dashboard__card--content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: inherit;
+  padding: 16px !important;
+}
+
+.dashboard__mainContainer {
+  display: flex;
+  flex-direction: column !important;
+  width: 100%;
+}
+
+.dashboard__cardContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 1rem;
+}

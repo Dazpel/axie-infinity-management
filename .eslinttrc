@@ -1,0 +1,69 @@
+module.exports = {
+
+    root: true,
+
+    parser: '@typescript-eslint/parser',
+
+    plugins: ['@typescript-eslint', 'jest'],
+
+    extends: ['airbnb', 'airbnb-typescript'],
+
+    parserOptions: {
+
+        project: ['./tsconfig.json', './jest.config.ts'],
+
+    },
+
+    rules: {
+
+        'arrow-body-style': 'off',
+
+        'react/jsx-uses-react': 'off',
+
+        'react/react-in-jsx-scope': 'off',
+
+        'jsx-quotes': [2, 'prefer-single'],
+
+        'import/prefer-default-export': 'off',
+
+        'import/extensions': [
+
+            'off',
+
+            'ignorePackages',
+
+            {
+
+                js: 'always',
+
+                jsx: 'always',
+
+                ts: 'always',
+
+                tsx: 'always',
+
+            },
+
+        ],
+
+        // jest rules
+
+        'jest/no-disabled-tests': 'warn',
+
+        'jest/no-focused-tests': 'error',
+
+        'jest/no-identical-title': 'error',
+
+        'jest/prefer-to-have-length': 'warn',
+
+        'jest/valid-expect': 'error',
+
+    },
+
+    env: {
+
+        'jest/globals': true,
+
+    },
+
+};

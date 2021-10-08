@@ -1,0 +1,47 @@
+.formContainer {
+  display: flex;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.signIn_form {
+  display: flex;
+  flex-direction: column;
+}
+.scholar_form {
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
+  max-width: 20rem !important;
+}
+.userRole_btn {
+  min-width: 10rem !important;
+}
+
+.signIn_btn {
+  max-width: 8rem !important;
+  align-self: center;
+}
+
+.signIn_btn--Group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.socialIcons {
+  width: 14px;
+  height: 15px;
+}
+
+.socialBtns {
+  width: 13rem !important;
+  height: 40px !important;
+  border-radius: 6px !important;
+}
+
+.socialBtns > .MuiButton-startIcon {
+  position: absolute;
+  left: 16px;
+}
