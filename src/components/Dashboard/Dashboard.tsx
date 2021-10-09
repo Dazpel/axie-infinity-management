@@ -76,7 +76,7 @@ export default function Dashboard() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [manager.scholarsId]);
 
   return (
     <Grid className="dashboard__mainContainer">
@@ -97,7 +97,10 @@ export default function Dashboard() {
 
       <Grid>
         {hasScholars && (
-          <ScholarsDataTable scholarIdArray={manager.scholarsId} />
+          <ScholarsDataTable
+            scholarIdArray={manager.scholarsId}
+            managerId={manager.uid}
+          />
         )}
       </Grid>
     </Grid>

@@ -36,7 +36,24 @@ export const managerSlice = createSlice({
             }
         },
         updateManagerScholarsArray: (state, action: PayloadAction<any>) => {
-            state.scholarsId.push(action.payload)
+            const { payload: { id, actionType } } = action
+
+            switch (actionType) {
+                case 'Add':
+                    state.scholarsId.push(action.payload)
+                    break;
+                case 'Remove':
+                    console.log("removing");
+
+                    let clonedArray = [...state.scholarsId]
+                    let scholarIndexInArray = clonedArray.indexOf(id)
+                    clonedArray.splice(scholarIndexInArray, 1)
+                    state.scholarsId = [...clonedArray]
+                    console.log(state.scholarsId)
+                    break;
+                default:
+                    break;
+            }
         },
     },
 })

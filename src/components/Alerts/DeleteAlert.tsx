@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -15,7 +15,7 @@ interface props {
   alertText: string;
   open: boolean;
   handleClose: () => void;
-  onDeleteFunction: () => void;
+  onDeleteFunction: () => Promise<void>;
 }
 
 export default function DeleteAlert(props: props) {

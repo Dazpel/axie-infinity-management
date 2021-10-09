@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
@@ -14,10 +14,20 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { fetchScholarAccountData } from "../../utils/functions";
+import {
+  deleteOneScholar,
+  fetchScholarAccountData,
+} from "../../utils/functions";
 import { Button, Skeleton, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import DeleteAlert from "../Alerts/DeleteAlert";
+import { updateManagerScholarsArray } from "../store/slices/managerSlice";
+import { useAppDispatch } from "../store/hooks";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -58,12 +68,15 @@ function SkeletonRows() {
 
 interface props {
   scholarIdArray?: string[];
+  managerId?: string;
 }
 
 export default function ScholarsDataTable(props: props) {
   const [isLoading, setIsLoading] = useState(true);
+  const scholarIdToDelete = useRef("");
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<any[]>([]);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     let isMounted: Boolean = true;
@@ -80,6 +93,8 @@ export default function ScholarsDataTable(props: props) {
             throw error;
           }
         }
+        console.log(scholarDataObject);
+
         setRows(scholarDataObject);
         setIsLoading(false);
       };
@@ -89,14 +104,29 @@ export default function ScholarsDataTable(props: props) {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [props.scholarIdArray]);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (id: string) => {
+    //we create a reference to the current row id which is the scholar's id
+    //this is to prevent getting a wrong id
+    scholarIdToDelete.current = id;
     setOpen(true);
   };
 
-  const handleOnDelete = (id: string) => {
-    console.log("deleting user");
+  const handleOnDelete = async () => {
+    let res = await deleteOneScholar(
+      scholarIdToDelete.current,
+      props.managerId
+    );
+
+    if (res.success) {
+      dispatch(
+        updateManagerScholarsArray({
+          id: scholarIdToDelete.current,
+          actionType: "Remove",
+        })
+      );
+    }
     handleClickClose();
   };
 
@@ -113,7 +143,6 @@ export default function ScholarsDataTable(props: props) {
       <Table stickyHeader aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            {/* <TableCell /> */}
             <StyledTableCell align="center" colSpan={1}>
               Scholar
             </StyledTableCell>
@@ -143,68 +172,72 @@ export default function ScholarsDataTable(props: props) {
         <TableBody>
           {isLoading
             ? SkeletonRows()
-            : rows.map((row, i) => (
-                <React.Fragment key={i}>
-                  <StyledTableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-                    <TableCell align="center" component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="center">{row.slpAverage}</TableCell>
-                    <TableCell align="center">{row.unclaimedSlp}</TableCell>
-                    <TableCell align="center">0</TableCell>
-                    <TableCell align="center">{row.total}</TableCell>
-                    <TableCell align="center">{row.lastClaimedDays}</TableCell>
-                    <TableCell align="center">
-                      {row.managerShare.slp} ({row.managerShare.percentage}%)
-                    </TableCell>
-                    <TableCell align="center">
-                      {row.scholarShare.slp} ({row.scholarShare.percentage}%)
-                    </TableCell>
-                    <TableCell align="center">
-                      <Button
-                        variant="outlined"
-                        onClick={() => onActionClick(row.id, "details")}
-                      >
-                        More details
-                      </Button>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Tooltip
-                        sx={{ fontSize: 14 }}
-                        title={`Edit details of ${row.name}`}
-                      >
-                        <IconButton
-                          color="info"
-                          aria-label="edit scholar"
-                          component="span"
-                          onClick={() => onActionClick(row.id, "edit")}
+            : rows.map((row, i) => {
+                return (
+                  <React.Fragment key={i}>
+                    <StyledTableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+                      <TableCell align="center" component="th" scope="row">
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="center">{row.slpAverage}</TableCell>
+                      <TableCell align="center">{row.unclaimedSlp}</TableCell>
+                      <TableCell align="center">0</TableCell>
+                      <TableCell align="center">{row.total}</TableCell>
+                      <TableCell align="center">
+                        {row.lastClaimedDays}
+                      </TableCell>
+                      <TableCell align="center">
+                        {row.managerShare.slp} ({row.managerShare.percentage}%)
+                      </TableCell>
+                      <TableCell align="center">
+                        {row.scholarShare.slp} ({row.scholarShare.percentage}%)
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="outlined"
+                          onClick={() => onActionClick(row.id, "details")}
                         >
-                          <ModeEditIcon />
-                        </IconButton>
-                      </Tooltip>
-                      /
-                      <DeleteAlert
-                        alertText="You are about to delete this scholar, do you want to continue?"
-                        alertTitle="Delete scholar?"
-                        handleClose={handleClickClose}
-                        onDeleteFunction={() => handleOnDelete(row.id)}
-                        open={open}
-                      >
-                        <Tooltip title={`Delete ${row.name}`}>
+                          More details
+                        </Button>
+                      </TableCell>
+                      <TableCell align="center">
+                        <Tooltip
+                          sx={{ fontSize: 14 }}
+                          title={`Edit details of ${row.name}`}
+                        >
                           <IconButton
-                            color="error"
-                            aria-label="delete scholar"
+                            color="info"
+                            aria-label="edit scholar"
                             component="span"
-                            onClick={handleClickOpen}
+                            onClick={() => onActionClick(row.id, "edit")}
                           >
-                            <DeleteIcon />
+                            <ModeEditIcon />
                           </IconButton>
                         </Tooltip>
-                      </DeleteAlert>
-                    </TableCell>
-                  </StyledTableRow>
-                </React.Fragment>
-              ))}
+                        /
+                        <DeleteAlert
+                          alertText="You are about to delete this scholar, do you want to continue?"
+                          alertTitle="Delete scholar?"
+                          handleClose={handleClickClose}
+                          onDeleteFunction={handleOnDelete}
+                          open={open}
+                        >
+                          <Tooltip title={`Delete ${row.name}`}>
+                            <IconButton
+                              color="error"
+                              aria-label="delete scholar"
+                              component="span"
+                              onClick={() => handleClickOpen(row.id)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </DeleteAlert>
+                      </TableCell>
+                    </StyledTableRow>
+                  </React.Fragment>
+                );
+              })}
         </TableBody>
       </Table>
     </TableContainer>

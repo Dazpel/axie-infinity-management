@@ -68,7 +68,9 @@ export default function AddScholarModal(props: props) {
     if (!res.success) {
       return setErrorMessage(res.message);
     }
-    dispatch(updateManagerScholarsArray(res.scholarId));
+    dispatch(
+      updateManagerScholarsArray({ id: res.scholarId, actionType: "Add" })
+    );
     handleClose();
   };
 

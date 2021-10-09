@@ -1,5 +1,5 @@
 
-import { doc, getDoc, setDoc, updateDoc, arrayUnion, collection } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, arrayUnion, collection, arrayRemove, deleteDoc } from "firebase/firestore";
 import { firebaseDb } from "../components/AuthProvider/fbConfig";
 
 
@@ -157,4 +157,30 @@ export const fetchCryptoCoins = async (iconsArray) => {
     }
 
     return { success: true, data }
+}
+
+export const deleteOneScholar = async (scholarId, managerId) => {
+    try {
+
+        const managerRef = doc(firebaseDb, "managers", managerId)
+        //We first delete the reference from the manager's array
+        await updateDoc(managerRef,
+            {
+                scholarsId: arrayRemove(scholarId)
+            }
+        )
+
+        //then we delete the document from the scholars collection
+        await deleteDoc(doc(firebaseDb, "scholars", scholarId));
+
+        return {
+            success: true,
+        }
+
+    } catch (error) {
+        return {
+            success: false,
+            message: error.message
+        }
+    }
 }
