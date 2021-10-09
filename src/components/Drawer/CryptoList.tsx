@@ -29,6 +29,8 @@ export default function CryptoList() {
         }
       };
       getUserPricesAndMethods();
+
+      //update price every minute
       setInterval(async function () {
         if (isMounted) getUserPricesAndMethods();
       }, 60000);
