@@ -5,6 +5,7 @@ import {
   fetchOneCoinPrice,
   fetchScholarAccountData,
 } from "../../utils/functions";
+import LoadingOverlay from "../Loader/LoadingOverlay";
 import { useAppSelector } from "../store/hooks";
 import AddScholarModal from "./AddScholarModal";
 import { DashboardInfoCard } from "./DashboardInfoCard";
@@ -77,6 +78,10 @@ export default function Dashboard() {
       isMounted = false;
     };
   }, [manager.scholarsId]);
+
+  if (isLoading) {
+    return <LoadingOverlay />;
+  }
 
   return (
     <Grid className="dashboard__mainContainer">
