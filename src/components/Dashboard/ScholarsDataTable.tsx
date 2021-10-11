@@ -23,11 +23,9 @@ import { styled } from "@mui/material/styles";
 import DeleteAlert from "../Alerts/DeleteAlert";
 import { updateManagerScholarsArray } from "../store/slices/managerSlice";
 import { useAppDispatch } from "../store/hooks";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import Modal from "@mui/material/Modal";
+import { TextField } from "@mui/material";
+import { ModifyScholarDataModal } from "./ModifyScholarDataModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -73,10 +71,11 @@ interface props {
 
 export default function ScholarsDataTable(props: props) {
   const [isLoading, setIsLoading] = useState(true);
-  const scholarIdToDelete = useRef("");
+  const [openModal, setOpenModal] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<any[]>([]);
   const dispatch = useAppDispatch();
+  const scholarIdToDelete = useRef("");
 
   useEffect(() => {
     let isMounted: Boolean = true;
@@ -113,6 +112,18 @@ export default function ScholarsDataTable(props: props) {
     setOpen(true);
   };
 
+  const handleClickClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleModalClose = () => {
+    setOpenModal(false);
+  };
+
   const handleOnDelete = async () => {
     let res = await deleteOneScholar(
       scholarIdToDelete.current,
@@ -130,12 +141,8 @@ export default function ScholarsDataTable(props: props) {
     handleClickClose();
   };
 
-  const handleClickClose = () => {
-    setOpen(false);
-  };
-
-  const onActionClick = (id: string, action: string) => {
-    console.log(id, action);
+  const onActionClick = (index: number, id: string, action: string) => {
+    console.log(rows[index]);
   };
 
   return (
@@ -195,7 +202,7 @@ export default function ScholarsDataTable(props: props) {
                       <TableCell align="center">
                         <Button
                           variant="outlined"
-                          onClick={() => onActionClick(row.id, "details")}
+                          onClick={() => onActionClick(i, row.id, "details")}
                         >
                           More details
                         </Button>
@@ -209,11 +216,19 @@ export default function ScholarsDataTable(props: props) {
                             color="info"
                             aria-label="edit scholar"
                             component="span"
-                            onClick={() => onActionClick(row.id, "edit")}
+                            onClick={handleOpenModal}
                           >
                             <ModeEditIcon />
                           </IconButton>
                         </Tooltip>
+                        <ModifyScholarDataModal
+                          openModal={openModal}
+                          scholarsStateObj={rows}
+                          setRows={setRows}
+                          handleModalClose={handleModalClose}
+                          scholarData={row}
+                          index={i}
+                        />
                         /
                         <DeleteAlert
                           alertText="You are about to delete this scholar, do you want to continue?"

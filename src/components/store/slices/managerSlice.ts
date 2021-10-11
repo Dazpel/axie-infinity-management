@@ -40,11 +40,9 @@ export const managerSlice = createSlice({
 
             switch (actionType) {
                 case 'Add':
-                    state.scholarsId.push(action.payload)
+                    state.scholarsId.push(action.payload.id)
                     break;
                 case 'Remove':
-                    console.log("removing");
-
                     let clonedArray = [...state.scholarsId]
                     let scholarIndexInArray = clonedArray.indexOf(id)
                     clonedArray.splice(scholarIndexInArray, 1)

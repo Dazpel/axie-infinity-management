@@ -22,6 +22,7 @@ export const fetchUserDetails = async (id) => {
 }
 
 export const fetchScholarAccountData = async (scholarId) => {
+
     const scholarRef = doc(firebaseDb, "scholars", scholarId);
     const scholarSnap = await getDoc(scholarRef);
 
@@ -48,6 +49,8 @@ export const fetchScholarAccountData = async (scholarId) => {
                         }
                         return {
                             id: scholarId,
+                            roninAddress: scholarData.axie_roninAddress,
+                            payoutAddress: scholarData.scholar_roninAddress,
                             name: scholarData.name,
                             total: result.total,
                             slpAverage,
@@ -172,6 +175,34 @@ export const deleteOneScholar = async (scholarId, managerId) => {
 
         //then we delete the document from the scholars collection
         await deleteDoc(doc(firebaseDb, "scholars", scholarId));
+
+        return {
+            success: true,
+        }
+
+    } catch (error) {
+        return {
+            success: false,
+            message: error.message
+        }
+    }
+}
+
+export const updateScholarData = async (scholarData) => {
+    try {
+
+        const scholarRef = doc(firebaseDb, "scholars", scholarData.id)
+
+        // Update scholar data
+        await updateDoc(scholarRef,
+            {
+                axie_roninAddress: scholarData.roninAddress,
+                scholar_roninAddress: scholarData.payoutAddress,
+                manager_share: scholarData.managerShare.percentage,
+                scholar_share: scholarData.scholarShare.percentage,
+                name: scholarData.name,
+            }
+        )
 
         return {
             success: true,
