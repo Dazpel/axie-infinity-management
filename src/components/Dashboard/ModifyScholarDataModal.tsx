@@ -33,7 +33,7 @@ interface Props {
   index: number;
   openModal: boolean;
   handleModalClose: () => void;
-  setRows: React.Dispatch<React.SetStateAction<any[]>>;
+  updateScholarFunction: (state: object[]) => void;
   scholarsStateObj: any[];
 }
 
@@ -43,7 +43,7 @@ export const ModifyScholarDataModal = (props: Props) => {
     handleModalClose,
     index,
     scholarData,
-    setRows,
+    updateScholarFunction,
     scholarsStateObj,
   } = props;
   const [roninError, setRoninError] = React.useState(false);
@@ -105,15 +105,15 @@ export const ModifyScholarDataModal = (props: Props) => {
       return setErrorMessage(res.message);
     }
 
-    let newState = {
+    let updatedScholarData = {
       ...scholarsStateObj[index],
       ...scholarData,
     };
 
-    setRows({
-      ...scholarsStateObj,
-      [scholarsStateObj[index]]: { ...newState },
-    });
+    let newState = [...scholarsStateObj];
+    newState[index] = { ...updatedScholarData };
+
+    updateScholarFunction(newState);
 
     handleModalClose();
   };

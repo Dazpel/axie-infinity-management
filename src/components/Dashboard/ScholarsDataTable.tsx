@@ -76,6 +76,7 @@ export default function ScholarsDataTable(props: props) {
   const [rows, setRows] = useState<any[]>([]);
   const dispatch = useAppDispatch();
   const scholarIdToDelete = useRef("");
+  const scholarIdToModify = useRef(0);
 
   useEffect(() => {
     let isMounted: Boolean = true;
@@ -105,6 +106,12 @@ export default function ScholarsDataTable(props: props) {
     };
   }, [props.scholarIdArray]);
 
+  const updateScholarData = (state: object[]) => {
+    setIsLoading(true);
+    setRows(state);
+    setIsLoading(false);
+  };
+
   const handleClickOpen = (id: string) => {
     //we create a reference to the current row id which is the scholar's id
     //this is to prevent getting a wrong id
@@ -116,7 +123,8 @@ export default function ScholarsDataTable(props: props) {
     setOpen(false);
   };
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (index: number) => {
+    scholarIdToModify.current = index;
     setOpenModal(true);
   };
 
@@ -144,7 +152,7 @@ export default function ScholarsDataTable(props: props) {
   const onActionClick = (index: number, id: string, action: string) => {
     console.log(rows[index]);
   };
-
+  console.log(rows);
   return (
     <TableContainer component={Paper} style={{ marginBottom: "2rem" }}>
       <Table stickyHeader aria-label="collapsible table">
@@ -216,19 +224,21 @@ export default function ScholarsDataTable(props: props) {
                             color="info"
                             aria-label="edit scholar"
                             component="span"
-                            onClick={handleOpenModal}
+                            onClick={() => handleOpenModal(i)}
                           >
                             <ModeEditIcon />
                           </IconButton>
                         </Tooltip>
-                        <ModifyScholarDataModal
-                          openModal={openModal}
-                          scholarsStateObj={rows}
-                          setRows={setRows}
-                          handleModalClose={handleModalClose}
-                          scholarData={row}
-                          index={i}
-                        />
+                        {openModal && (
+                          <ModifyScholarDataModal
+                            openModal={openModal}
+                            scholarsStateObj={rows}
+                            updateScholarFunction={updateScholarData}
+                            handleModalClose={handleModalClose}
+                            scholarData={rows[scholarIdToModify.current]}
+                            index={scholarIdToModify.current}
+                          />
+                        )}
                         /
                         <DeleteAlert
                           alertText="You are about to delete this scholar, do you want to continue?"
