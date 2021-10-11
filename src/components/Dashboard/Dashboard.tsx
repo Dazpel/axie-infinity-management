@@ -9,6 +9,7 @@ import LoadingOverlay from "../Loader/LoadingOverlay";
 import { useAppSelector } from "../store/hooks";
 import AddScholarModal from "./AddScholarModal";
 import { DashboardInfoCard } from "./DashboardInfoCard";
+import NoScholarsDataTable from "./NoScholarsDataTable";
 import ScholarsDataTable from "./ScholarsDataTable";
 import "./styles.css";
 
@@ -101,11 +102,13 @@ export default function Dashboard() {
       </Box>
 
       <Grid>
-        {hasScholars && (
+        {hasScholars ? (
           <ScholarsDataTable
             scholarIdArray={manager.scholarsId}
             managerId={manager.uid}
           />
+        ) : (
+          <NoScholarsDataTable />
         )}
       </Grid>
     </Grid>

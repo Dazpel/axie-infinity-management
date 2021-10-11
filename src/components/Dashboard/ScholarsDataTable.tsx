@@ -56,7 +56,7 @@ function SkeletonRows() {
       {[...Array(5).keys()].map((el, index) => {
         return (
           <TableRow key={index}>
-            <TableCell colSpan={8}>
+            <TableCell colSpan={12}>
               <Skeleton animation="wave" />
             </TableCell>
           </TableRow>
