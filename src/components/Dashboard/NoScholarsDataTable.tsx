@@ -28,6 +28,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { scholarsDataTableTitles } from "../../utils/constants";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -70,16 +71,11 @@ export default function NoScholarsDataTable() {
             </StyledTableCell>
           </TableRow>
           <TableRow>
-            <StyledTableCell align="center">Name</StyledTableCell>
-            <StyledTableCell align="center">Average</StyledTableCell>
-            <StyledTableCell align="center">Unclaimed</StyledTableCell>
-            <StyledTableCell align="center">Claimed</StyledTableCell>
-            <StyledTableCell align="center">Total</StyledTableCell>
-            <StyledTableCell align="center">Last claim (days)</StyledTableCell>
-            <StyledTableCell align="center">Manager</StyledTableCell>
-            <StyledTableCell align="center">Scholar</StyledTableCell>
-            <StyledTableCell align="center">Details</StyledTableCell>
-            <StyledTableCell align="center">Modify/Delete</StyledTableCell>
+            {scholarsDataTableTitles.map((title, index) => (
+              <StyledTableCell key={index} align="center">
+                {title}
+              </StyledTableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>

@@ -23,9 +23,9 @@ import { styled } from "@mui/material/styles";
 import DeleteAlert from "../Alerts/DeleteAlert";
 import { updateManagerScholarsArray } from "../store/slices/managerSlice";
 import { useAppDispatch } from "../store/hooks";
-import Modal from "@mui/material/Modal";
-import { TextField } from "@mui/material";
 import { ModifyScholarDataModal } from "./ModifyScholarDataModal";
+import { scholarsDataTableTitles } from "../../utils/constants";
+import { useHistory } from "react-router";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -71,6 +71,7 @@ interface props {
 
 export default function ScholarsDataTable(props: props) {
   const [isLoading, setIsLoading] = useState(true);
+  const history = useHistory();
   const [openModal, setOpenModal] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<any[]>([]);
@@ -149,10 +150,10 @@ export default function ScholarsDataTable(props: props) {
     handleClickClose();
   };
 
-  const onActionClick = (index: number, id: string, action: string) => {
-    console.log(rows[index]);
+  const onDetailsClick = (scholarId: string) => {
+    history.push("/dashboard/scholar/details", { scholarId });
   };
-  console.log(rows);
+
   return (
     <TableContainer component={Paper} style={{ marginBottom: "2rem" }}>
       <Table stickyHeader aria-label="collapsible table">
@@ -172,16 +173,11 @@ export default function ScholarsDataTable(props: props) {
             </StyledTableCell>
           </TableRow>
           <TableRow>
-            <StyledTableCell align="center">Name</StyledTableCell>
-            <StyledTableCell align="center">Average</StyledTableCell>
-            <StyledTableCell align="center">Unclaimed</StyledTableCell>
-            <StyledTableCell align="center">Claimed</StyledTableCell>
-            <StyledTableCell align="center">Total</StyledTableCell>
-            <StyledTableCell align="center">Last claim (days)</StyledTableCell>
-            <StyledTableCell align="center">Manager</StyledTableCell>
-            <StyledTableCell align="center">Scholar</StyledTableCell>
-            <StyledTableCell align="center">Details</StyledTableCell>
-            <StyledTableCell align="center">Modify/Delete</StyledTableCell>
+            {scholarsDataTableTitles.map((title, index) => (
+              <StyledTableCell key={index} align="center">
+                {title}
+              </StyledTableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -210,7 +206,7 @@ export default function ScholarsDataTable(props: props) {
                       <TableCell align="center">
                         <Button
                           variant="outlined"
-                          onClick={() => onActionClick(i, row.id, "details")}
+                          onClick={() => onDetailsClick(row.id)}
                         >
                           More details
                         </Button>
@@ -231,12 +227,12 @@ export default function ScholarsDataTable(props: props) {
                         </Tooltip>
                         {openModal && (
                           <ModifyScholarDataModal
-                            openModal={openModal}
-                            scholarsStateObj={rows}
-                            updateScholarFunction={updateScholarData}
-                            handleModalClose={handleModalClose}
-                            scholarData={rows[scholarIdToModify.current]}
                             index={scholarIdToModify.current}
+                            openModal={openModal}
+                            scholarData={rows[scholarIdToModify.current]}
+                            scholarsStateObj={rows}
+                            handleModalClose={handleModalClose}
+                            updateScholarFunction={updateScholarData}
                           />
                         )}
                         /

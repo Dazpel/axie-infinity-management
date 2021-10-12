@@ -23,6 +23,7 @@ import { OverViewIcon } from "../customSvgs/CustomSvgs";
 import { useLocation } from "react-router";
 import "./styles.css";
 import { activeRoute, onHoverStyles } from "./styles";
+import { ScholarDetailsComponent } from "../Dashboard/ScholarDetailsComponent";
 
 const drawerWidth = 240;
 interface AppBarProps extends MuiAppBarProps {
@@ -160,7 +161,10 @@ export default function HomeDrawer(props: any) {
         <DrawerHeader />
         <Switch>
           <Route exact path="/dashboard" component={Dashboard} />
-          {/* <PrivateRoute exact path="/dashboard" component={Dashboard} /> */}
+          <PrivateRoute
+            path="/dashboard/scholar/details"
+            component={ScholarDetailsComponent}
+          />
           <Redirect from="/" to="/dashboard" />
         </Switch>
       </Main>
